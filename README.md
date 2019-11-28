@@ -46,37 +46,37 @@ More details are in [`scripts/build.py`](scripts/build.py).
 #### Run Binary Directly
 
 Go to the `run` directory and run the binary `iccad19gr` with a toy case `ispd18_sample`:
-~~~
+```bash
 $ cd run
 $ ./iccad19gr -lef ../toys/iccad2019c/ispd18_sample/ispd18_sample.input.lef -def ../toys/iccad2019c/ispd18_sample/ispd18_sample.input.def -output ispd18_sample.solution.guide -threads 8
-~~~
+```
 
 #### Run with a Wrapping Script
 
 Instead of running the binary directly, you may also use a wrapping script `run.py` to save typing and do more:
-~~~
+```bash
 $ cd run
 $ ./run.py 8s -p ../toys/
-~~~
+```
 
 If Innovus® has been properly installed in your OS, an evaluation can be launched by
-~~~
+```bash
 $ ./run.py 8s -s eval -p ../toys/
-~~~
+```
 In the end, a result table will be printed in the terminal.
 
 Furthermore, the solution can be visualized by
-~~~
+```bash
 $ ./run.py 8s -s view -p ../toys/
-~~~
+```
 which gives:
 
 ![ispd18_sample.solution.png](/toys/iccad2019c/ispd18_sample/ispd18_sample.solution.png)
 
 The three steps, `route`, `eval` and `view` of `run.py` can also be invoked in a single line:
-~~~
+```bash
 $ ./run.py 8s -s route eval view -p ../toys/
-~~~
+```
 More usage about `run.py` can be known by the option `-h`.
 
 ### 2.2. Batch Test
@@ -84,7 +84,7 @@ More usage about `run.py` can be known by the option `-h`.
 The benchmarks can be downloaded from [the hompage of ISPD'18 Contest ](http://www.ispd.cc/contests/18/#benchmarks).
 You may let `run.py` know the benchmark path by setting OS environmental variable `BENCHMARK_PATH` or specifying it under option `-p`.
 Then,
-```
+```bash
 $ cd run
 $ ./run.py <benchmark_name...|all> -s route eval [option...]
 ```
