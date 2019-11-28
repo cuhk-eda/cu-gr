@@ -1,7 +1,7 @@
 CU-GR
 ======================================
-CU-GR is a VLSI global routing tool developed by the research team supervised by Prof. Evangeline F. Y. Young in The Chinese University of Hong Kong (CUHK).
-Different from previous global routers whose quality is usually measured by wirelength and resource overflow, 
+CU-GR is a VLSI global routing tool developed by the research team supervised by Prof. Evangeline F. Y. Young at The Chinese University of Hong Kong (CUHK).
+Different from previous global routers whose quality is usually measured by wirelength and resource overflow,
 CU-GR is a detailed routability-driven global router and its solution quality is solely determined by the final detailed routing results.
 In particular, our global router adopts several efficient and effective methods to generate a set of connected rectangles to guide the detailed router:
 * A sophisticated probability-based cost scheme
@@ -158,7 +158,7 @@ All rights reserved
 
 
 
-CU-SD LICENSE (adapted from the original BSD license) Redistribution of the any code, with or without modification, are permitted provided that the conditions below are met. 
+CU-SD LICENSE (adapted from the original BSD license) Redistribution of the any code, with or without modification, are permitted provided that the conditions below are met.
 
 
 
