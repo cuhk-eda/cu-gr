@@ -1,0 +1,49 @@
+Prerequisite
+------------
+Please make sure you have Innovus installed and the path to Innovus is added to your $PATH environment variable. To add a path to $PATH variable, add the following statement to your shell config file:
+
+Assuming the path to Innovus is /path/to/innovus/bin
+
+For bash/ksh, add the following line to .bashrc/.kshrc
+export PATH=/path/to/innovus/bin:$PATH
+
+For csh/tcsh, add the following line to .cshrc
+setenv PATH /path/to/innovus/bin:$PATH
+
+Usage
+-----
+./ispd19eval.sh -lef <path/to/input/LEF> -guide <path/to/input/guide> -idef <path/to/input/DEF> -odef <path/to/solution/DEF>
+
+Example
+-------
+./ispd19eval.sh -lef sample/ispd19_sample.input.lef -guide sample/ispd19_sample.input.guide -idef sample/ispd19_sample.input.def -odef sample/ispd19_sample.output.def
+
+Required files
+--------------
+in benchmark directory (use benchmark "sample" as example):
+ispd19_sample.input.lef - input LEF file
+ispd19_sample.input.def - input DEF file
+ispd19_sample.input.guide - input route guide file
+ispd19_sample.output.def - output DEF file with routing solution
+
+in evaluation directory:
+ispd19eval.sh - evaluation script
+ispd19eval - evaluation binary for score calculation
+ispd19eval.w - weights for score calculation
+ispd19eval.tcl - script for Innovus
+
+Output files
+------------
+in the current directory (use benchmark "sample" as example):
+score.rpt
+
+Notes
+-----
+Please make sure:
+1. You have write permission to the current directory.
+2. You are able to start Innovus by just using "innovus" command on your terminal. Otherwise, you have to add the Innovus bin directory to your PATH variable.
+
+Contacts
+--------
+ispd2019contest@gmail.com
+

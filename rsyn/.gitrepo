@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/rsyn/rsyn.git
+	branch = master
+	commit = 99dc1241ef523c416be2617c7c7bdd3eec15413f
+	parent = 09d1bb30dc611121087a3ce33968e806944d33bb
+	cmdver = 0.3.1
