@@ -17,7 +17,7 @@ This version of code is consistent with the one submitted to contest.)
 
 **Step 1:** Download the source code. For example,
 ```bash
-$ git clone https://github.com/cuhk-route/cu-gr
+$ git clone https://github.com/cuhk-eda/cu-gr
 ```
 
 **Step 2:** Go to the project root and build by
