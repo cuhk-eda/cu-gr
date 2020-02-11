@@ -82,6 +82,9 @@ MetalLayer::MetalLayer(Rsyn::PhysicalLayer rsynLayer, Rsyn::PhysicalTracks rsynT
                 maxEolSpace = std::max(maxEolSpace, space);
                 maxEolWidth = std::max(maxEolWidth, eolWidth);
                 maxEolWithin = std::max(maxEolWithin, eolWithin);
+            } else if (!numSpaceTable) {
+                parallelWidthSpace[0][0] = space;
+                defaultSpace = getParaRunSpace(width);
             } else if (space != defaultSpace) {
                 log() << "Warning in " << __func__ << ": For " << rsynLayer.getName()
                       << ", mismatched defaultSpace & spacingTable... " << std::endl;
