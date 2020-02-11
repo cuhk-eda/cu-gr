@@ -1,8 +1,8 @@
-CU-GR
+CUGR
 ======================================
-CU-GR is a VLSI global routing tool developed by the research team supervised by Prof. Evangeline F. Y. Young at The Chinese University of Hong Kong (CUHK).
+CUGR is a VLSI global routing tool developed by the research team supervised by Prof. Evangeline F. Y. Young at The Chinese University of Hong Kong (CUHK).
 Different from previous global routers whose quality is usually measured by wirelength and resource overflow,
-CU-GR is a detailed routability-driven global router and its solution quality is solely determined by the final detailed routing results.
+CUGR is a detailed routability-driven global router and its solution quality is solely determined by the final detailed routing results.
 In particular, our global router adopts several efficient and effective methods to generate a set of connected rectangles to guide the detailed router:
 * A sophisticated probability-based cost scheme
 * An optimal 3D pattern routing technique that combines 2D pattern routing and layer assignment
@@ -10,7 +10,13 @@ In particular, our global router adopts several efficient and effective methods 
 * A patching technique that adds useful route guides to further improve the detailed routability.
 * ...
 
-(CU-GR supports ICCAD'19 benchmarks ([v2](http://iccad-contest.org/2019/Problem_C/iccad19_benchmarks_v2.tar.gz), [hidden](http://iccad-contest.org/2019/Problem_C/iccad19_hidden_benchmarks.tar.gz)).
+More details are in the following paper:
+
+* Jinwei Liu, Chak-Wa Pui, Fangzhou Wang, Evangeline F. Y. Young,
+["CUGR: Detailed-Routability-Driven 3D Global Routing with Probabilistic Resource Model"](https://cwpui.com/doc/dac_gr.pdf),
+ACM/IEEE Design Automation Conference (DAC), San Francisco, CA, USA, July 19-23, 2020.
+
+(CUGR supports ICCAD'19 benchmarks ([v2](http://iccad-contest.org/2019/Problem_C/iccad19_benchmarks_v2.tar.gz), [hidden](http://iccad-contest.org/2019/Problem_C/iccad19_hidden_benchmarks.tar.gz)).
 This version of code is consistent with the one submitted to contest.)
 
 ## 1. How to Build
@@ -146,7 +152,7 @@ READ THIS LICENSE AGREEMENT CAREFULLY BEFORE USING THIS PRODUCT. BY USING THIS P
 
 
 
-License Agreement for CU-GR
+License Agreement for CUGR
 
 
 
