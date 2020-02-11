@@ -75,6 +75,7 @@ void Router::run() {
     }
     if (db::setting.multiNetVerbose >= +db::VerboseLevelT::MIDDLE) guideGenStat.print();
 
+    // congMap.printCrsnMap(1, {80, 1000}, {40, 70});
     log() << std::endl;
     log() << "################################################################" << std::endl;
     database.setUnitVioCost(1);  // set the cost back to without discount
@@ -104,7 +105,7 @@ void Router::updateCost() {
         grDatabase.fadeHistCost();
 
         grDatabase.setUnitViaMultiplier(
-            max(100 / pow(5, iter - 1), 4.0));  // note: enlarge unit via cost to avoid extra use of vias
+            max(100 / pow(5, iter - 1), 4.0));  // enlarge unit via cost to avoid extra use of vias
         grDatabase.setLogisticSlope(db::setting.initLogisticSlope * pow(2, iter));
     }
 
@@ -114,7 +115,7 @@ void Router::updateCost() {
     }
 }
 
-vector<vector<int>> Router::getBatches(vector<SingleNetRouter>& routers, const vector<int>& netsToRoute) {
+vector<vector<int>> Router::getBatches(vector<SingleNetRouter>& routers, const vector<int>& netsToRoute, bool seqEq) {
     vector<int> batch(netsToRoute.size());
     for (int i = 0; i < netsToRoute.size(); i++) batch[i] = i;
 
@@ -134,7 +135,7 @@ vector<vector<int>> Router::getBatches(vector<SingleNetRouter>& routers, const v
     });
 
     Scheduler scheduler(routers);
-    const vector<vector<int>>& batches = scheduler.schedule();
+    const vector<vector<int>>& batches = seqEq ? scheduler.scheduleOrderEq() : scheduler.schedule();
 
     if (db::setting.multiNetVerbose >= +db::VerboseLevelT::MIDDLE) {
         log() << "Finish multi-thread scheduling" << ((db::setting.numThreads == 0) ? " using simple mode" : "")
@@ -153,7 +154,7 @@ void Router::routeApprx(const vector<int>& netsToRoute) {
         routers.reserve(netsToRoute.size());
         for (auto id : netsToRoute) routers.emplace_back(grDatabase.nets[id]);
 
-        vector<vector<int>> batches = getBatches(routers, netsToRoute);
+        vector<vector<int>> batches = getBatches(routers, netsToRoute, false);
 
         for (const vector<int>& batch : batches) {
             runJobsMT(batch.size(), [&](int jobIdx) {
@@ -200,11 +201,16 @@ void Router::fluteAllAndRoute(const vector<int>& netsToRoute) {
         if (router.grNet.needToRoute()) router.getRoutingOrder();
     printlog("finish edge shifting");
 
-    for (int i = 0; i < routers.size(); i++) {
-        auto& router = routers[i];
-        router.initRoutePattern(initRouters[i]);
-        router.finish();
-        allNetStatus[netsToRoute[i]] = router.status;
+    vector<vector<int>> batches = getBatches(routers, netsToRoute, true);
+    for (const vector<int>& batch : batches) {
+            runJobsMT(batch.size(), [&](int jobIdx) {
+            int idx = batch[jobIdx];
+            auto& router = routers[idx];
+            router.initRoutePattern(initRouters[idx]);
+            router.finish();
+
+            allNetStatus[netsToRoute[idx]] = router.status;
+        });
     }
 
     printlog("finish pattern route");

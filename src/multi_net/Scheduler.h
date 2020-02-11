@@ -6,6 +6,7 @@ class Scheduler {
 public:
     Scheduler(const vector<SingleNetRouter>& routersToExec) : routers(routersToExec){};
     vector<vector<int>>& schedule();
+    vector<vector<int>>& scheduleOrderEq();
 
 private:
     const vector<SingleNetRouter>& routers;

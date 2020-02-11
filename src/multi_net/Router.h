@@ -18,7 +18,7 @@ private:
 
     vector<int> getNetsToRoute();
     void sortNets(vector<int>& netsToRoute);
-    vector<vector<int>> getBatches(vector<SingleNetRouter>& routers, const vector<int>& netsToRoute);
+    vector<vector<int>> getBatches(vector<SingleNetRouter>& routers, const vector<int>& netsToRoute, bool seqEq);
 
     void routeApprx(const vector<int>& netsToRoute);
     void fluteAllAndRoute(const vector<int>& netsToRoute);
