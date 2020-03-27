@@ -39,11 +39,12 @@ void LayerList::init() {
     //  Rsyn::PhysicalTracks (DEF)
     vector<Rsyn::PhysicalTracks> rsynTracks(rsynLayers.size());
     for (const Rsyn::PhysicalTracks& rsynTrack : physicalDesign.allPhysicalTracks()) {
-        int idx = rsynTrack.allLayers().front().getRelativeIndex();
-        if ((rsynTrack.getDirection() == Rsyn::TRACK_HORIZONTAL) ==
-            !strcmp(rsynLayers[idx].getLayer()->direction(), "HORIZONTAL")) {
-            assert(rsynLayers[idx].getRelativeIndex() == idx);
-            rsynTracks[idx] = (rsynTrack);
+        for (const Rsyn::PhysicalLayer& rsynLayer : rsynTrack.allLayers()) {
+            const int idx = rsynLayer.getRelativeIndex();
+            if ((rsynTrack.getDirection() == Rsyn::TRACK_HORIZONTAL) == !strcmp(rsynLayers[idx].getLayer()->direction(), "HORIZONTAL")) {
+                assert(rsynLayers[idx].getRelativeIndex() == idx);
+                rsynTracks[idx] = (rsynTrack);
+            }
         }
     }
 
@@ -694,7 +695,7 @@ void LayerList::initDiffLayerViaConfLUT(const int layerIdx,
     const size_t xSize = ceil(xLength / (double)botPitch) - 1;
     const utils::IntervalT<DBU> botLocRange(-topT2[1 - botDim].high + botT1[1 - botDim].low - botSpace + 1,
                                             +botT1[1 - botDim].high - topT2[1 - botDim].low + botSpace - 1);
-                                            
+
     const DBU maxLength = max<DBU>({xLength, -botLocRange.low, botLocRange.high});
     botLayer.confLutMargin = max(botLayer.confLutMargin, maxLength);
     viaBotVia.resize(nBotCPs);
