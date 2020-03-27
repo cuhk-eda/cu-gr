@@ -559,9 +559,13 @@ Tree flutes_c(int d, DTYPE *xs, DTYPE *ys, int *s, int acc)
     }
     if (i >= d) { // found a match
       tdup = t;
-      tdup.branch = (Branch*)malloc(sizeof(Branch)*(2*d-2));
+      if (d < 2) {
+        tdup.branch = NULL;
+      } else {
+        tdup.branch = (Branch*)malloc(sizeof(Branch)*(2*d-2));
+      }
       for (i=2*d-3; i>=0; i--) {
-	tdup.branch[i] = t.branch[i];
+        tdup.branch[i] = t.branch[i];
       }
       return tdup;
     }
@@ -2045,7 +2049,11 @@ Tree mergeRootedTrees(TreeNode *tn1, TreeNode *tn2, int *order1)
 
   //assert(i<=2*t.deg-2);
 
-  t.branch = (Branch*)malloc(sizeof(Branch)*(t.deg*2-2));
+  if (t.deg < 2) {
+    t.branch = NULL;
+  } else {
+    t.branch = (Branch*)malloc(sizeof(Branch)*(t.deg*2-2));
+  }
 
   redundant = i;
   for (; i<2*t.deg-2; i++) {
