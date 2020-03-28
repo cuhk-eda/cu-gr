@@ -14,20 +14,33 @@ void GCellGrid::init() {
     grid[0].push_back(database.dieRegion[X].low);
     grid[1].push_back(database.dieRegion[Y].low);
 
-    for (const Rsyn::PhysicalGCell &rsynGCell : physicalDesign.allPhysicalGCell()) {
-        int location = rsynGCell.getLocation();
-        int step = rsynGCell.getStep();
-        int numStep = rsynGCell.getNumTracks();
-        Dimension direction = rsynGCell.getDirection() == Rsyn::PhysicalGCellDirection::VERTICAL ? X : Y;
+    if (physicalDesign.allPhysicalGCell().empty()) {
+        for (unsigned direction = 0; direction != 2; ++direction) {
+             const int lo = database.dieRegion[direction].low;
+             const int hi = database.dieRegion[direction].high;
+             for (int i = lo + 3000; i + 3000 < hi; i += 3000) {
+                 grid[direction].push_back(i);
+             }
+         }
+    } else {
+        for (const Rsyn::PhysicalGCell &rsynGCell : physicalDesign.allPhysicalGCell()) {
+            const int location = rsynGCell.getLocation();
+            const int step = rsynGCell.getStep();
+            const int numStep = rsynGCell.getNumTracks();
+            const Dimension direction = rsynGCell.getDirection() == Rsyn::PhysicalGCellDirection::VERTICAL ? X : Y;
 
-        for (int i = 1; i < numStep; i++) grid[direction].push_back(location + step * i);
+            for (int i = 1; i < numStep; ++i) {
+                grid[direction].push_back(location + step * i);
+            }
+        }
     }
 
-    sort(grid[X].begin(), grid[X].end());
-    sort(grid[Y].begin(), grid[Y].end());
-
-    if (grid[X].back() != database.dieRegion[X].high) grid[X].push_back(database.dieRegion[X].high);
-    if (grid[Y].back() != database.dieRegion[Y].high) grid[Y].push_back(database.dieRegion[Y].high);
+    for (unsigned direction = 0; direction != 2; ++direction) {
+        sort(grid[direction].begin(), grid[direction].end());
+        if (grid[direction].back() != database.dieRegion[direction].high) {
+            grid[direction].push_back(database.dieRegion[direction].high);
+        }
+    }
 
     numTracks.resize(database.getLayerNum());
     for (int i = 0; i < database.getLayerNum(); i++) {
