@@ -67,11 +67,11 @@ MetalLayer::MetalLayer(Rsyn::PhysicalLayer rsynLayer, Rsyn::PhysicalTracks rsynT
         const int numSpace = layer->numSpacing();
         spaceRules.reserve(numSpace);
         for (int iSpace = 0; iSpace < numSpace; ++iSpace) {
-            const DBU space = static_cast<DBU>(std::round(layer->spacing(iSpace) * libDBU));
-            const DBU eolWidth = static_cast<DBU>(std::round(layer->spacingEolWidth(iSpace) * libDBU));
-            const DBU eolWithin = static_cast<DBU>(std::round(layer->spacingEolWithin(iSpace) * libDBU));
-            const DBU parSpace = static_cast<DBU>(std::round(layer->spacingParSpace(iSpace) * libDBU));
-            const DBU parWithin = static_cast<DBU>(std::round(layer->spacingParWithin(iSpace) * libDBU));
+            const DBU space{std::lround(layer->spacing(iSpace) * libDBU)};
+            const DBU eolWidth{std::lround(layer->spacingEolWidth(iSpace) * libDBU)};
+            const DBU eolWithin{std::lround(layer->spacingEolWithin(iSpace) * libDBU)};
+            const DBU parSpace{std::lround(layer->spacingParSpace(iSpace) * libDBU)};
+            const DBU parWithin{std::lround(layer->spacingParWithin(iSpace) * libDBU)};
             if (layer->hasSpacingParellelEdge(iSpace)) {
                 spaceRules.emplace_back(space, eolWidth, eolWithin, parSpace, parWithin);
                 maxEolSpace = std::max(maxEolSpace, space);
@@ -86,52 +86,100 @@ MetalLayer::MetalLayer(Rsyn::PhysicalLayer rsynLayer, Rsyn::PhysicalTracks rsynT
                 parallelWidthSpace[0][0] = space;
                 defaultSpace = getParaRunSpace(width);
             } else if (space != defaultSpace) {
-                log() << "Warning in " << __func__ << ": For " << rsynLayer.getName()
-                      << ", mismatched defaultSpace & spacingTable... " << std::endl;
+                log() << "Warning in " << __func__ << ": For " << rsynLayer.getName() << ", mismatched defaultSpace & spacingTable... " << std::endl;
             }
         }
         if (spaceRules.empty()) {
             log() << "Warning in " << __func__ << ": For " << name << ", no eol spacing rules..." << std::endl;
         }
     }
-    fixedMetalQueryMargin = std::max(maxEolSpace, maxEolWithin);
 
-    //  corner spacing
     const int numProps = layer->numProps();
     for (unsigned iProp = 0; static_cast<int>(iProp) < numProps; ++iProp) {
-        if (strcmp(layer->propName(iProp), "LEF58_CORNERSPACING")) continue;
-
-        if (hasCornerSpace()) {
-            log() << "Warning in " << __func__ << ": For " << name
-                  << ", multiple corner spacing rules: " << layer->propValue(iProp) << "...\n";
-            continue;
-        }
-
-        std::istringstream iss(layer->propValue(iProp));
-        std::string sBuf("");
-        double fBuf1{0};
-        double fBuf2{0};
-        while (iss) {
-            iss >> sBuf;
-            if (sBuf == "CORNERSPACING" || sBuf == "CONVEXCORNER" || sBuf == ";") continue;
-            if (sBuf == "EXCEPTEOL") {
-                cornerExceptEol = true;
-                iss >> fBuf1;
-                cornerEolWidth = static_cast<DBU>(std::round(fBuf1 * libDBU));
-            } else if (sBuf == "WIDTH") {
-                iss >> fBuf1 >> sBuf >> fBuf2;
-                if (fBuf1) {
-                    cornerWidth.push_back(static_cast<DBU>(std::round(fBuf1 * libDBU)));
-                    cornerWidthSpace.push_back(static_cast<DBU>(std::round(fBuf2 * libDBU)));
-                } else {
-                    cornerWidthSpace[0] = static_cast<DBU>(std::round(fBuf2 * libDBU));
-                }
-            } else {
-                log() << "Warning in " << __func__ << ": For " << name << ", corner spacing not identified: " << sBuf
-                      << "...\n";
+        if (!strcmp(layer->propName(iProp), "LEF58_CORNERSPACING")) {
+            //  corner spacing
+            if (hasCornerSpace()) {
+                log() << "Warning in " << __func__ << ": For " << name
+                      << ", multiple corner spacing rules: " << layer->propValue(iProp) << "...\n";
+                continue;
             }
-        }
+
+            std::istringstream iss(layer->propValue(iProp));
+            std::string sBuf("");
+            double fBuf1{0};
+            double fBuf2{0};
+            while (iss) {
+                iss >> sBuf;
+                if (sBuf == "CORNERSPACING" || sBuf == "CONVEXCORNER" || sBuf == ";") {
+                    continue;
+                }
+
+                if (sBuf == "EXCEPTEOL") {
+                    cornerExceptEol = true;
+                    iss >> fBuf1;
+                    cornerEolWidth = std::lround(fBuf1 * libDBU);
+                } else if (sBuf == "WIDTH") {
+                    iss >> fBuf1 >> sBuf >> fBuf2;
+                    if (fBuf1) {
+                        cornerWidth.push_back(std::lround(fBuf1 * libDBU));
+                        cornerWidthSpace.push_back(std::lround(fBuf2 * libDBU));
+                    } else {
+                        cornerWidthSpace[0] = std::lround(fBuf2 * libDBU);
+                    }
+                } else {
+                    log() << "Warning in " << __func__ << ": For " << name << ", corner spacing not identified: " << sBuf << "...\n";
+                }
+            }
+        } else if (!strcmp(layer->propName(iProp), "LEF57_SPACING")) {
+             //  eol spacing
+             std::istringstream iss(layer->propValue(iProp));
+             std::string sBuf("");
+             double space{0};
+             double eolWidth{0};
+             double eolWithin{0};
+             double parSpace{0};
+             double parWithin{0};
+             bool hasEol{false};
+             bool hasPar{false};
+             while (iss) {
+                 iss >> sBuf;
+                 if (sBuf == ";") {
+                     continue;
+                 }
+
+                 if (sBuf == "SPACING") {
+                     iss >> space;
+                 } else if (sBuf == "ENDOFLINE") {
+                     iss >> eolWidth >> sBuf >> eolWithin;
+                     hasEol = true;
+                 } else if (sBuf == "PARALLELEDGE") {
+                     iss >> parSpace >> sBuf >> parWithin;
+                     hasPar = true;
+                 } else {
+                     log() << "Warning in " << __func__ << ": For " << name << ", eol spacing not identified: " << sBuf << "...\n";
+                 }
+             }
+             if (hasPar) {
+                 spaceRules.emplace_back(std::lround(space * libDBU), std::lround(eolWidth), std::lround(eolWithin), std::lround(parSpace), std::lround(parWithin));
+                 maxEolSpace = std::max(maxEolSpace, std::lround(space * libDBU));
+                 maxEolWidth = std::max(maxEolWidth, std::lround(eolWidth * libDBU));
+                 maxEolWithin = std::max(maxEolWithin, std::lround(eolWithin * libDBU));
+             } else if (hasEol) {
+                 spaceRules.emplace_back(std::lround(space * libDBU), std::lround(eolWidth), std::lround(eolWithin));
+                 maxEolSpace = std::max(maxEolSpace, std::lround(space * libDBU));
+                 maxEolWidth = std::max(maxEolWidth, std::lround(eolWidth * libDBU));
+                 maxEolWithin = std::max(maxEolWithin, std::lround(eolWithin * libDBU));
+             } else if (!numSpaceTable) {
+                 parallelWidthSpace[0][0] = std::lround(space * libDBU);
+                 defaultSpace = getParaRunSpace(width);
+             } else if (std::lround(space * libDBU) != defaultSpace) {
+                 log() << "Warning in " << __func__ << ": For " << rsynLayer.getName() << ", mismatched defaultSpace & spacingTable... " << std::endl;
+             }
+         } else {
+             log() << "Warning in " << __func__ << ": For " << name << ", unknown prop: " << layer->propName(iProp) << "...\n";
+         }
     }
+    fixedMetalQueryMargin = std::max(maxEolSpace, maxEolWithin);
     delete rsynLayer.getLayer();
 
     // Rsyn::PhysicalTracks (DEF)
