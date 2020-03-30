@@ -37,8 +37,10 @@ void GCellGrid::init() {
 
     for (unsigned direction = 0; direction != 2; ++direction) {
         sort(grid[direction].begin(), grid[direction].end());
-        if (grid[direction].back() != database.dieRegion[direction].high) {
+        if (grid[direction].back() < database.dieRegion[direction].high) {
             grid[direction].push_back(database.dieRegion[direction].high);
+        } else if (grid[direction].back() > database.dieRegion[direction].high) {
+            log() << "Warning: grid line " << grid[direction].back() << " exceeds die region " << database.dieRegion[direction].high << std::endl;
         }
     }
 
