@@ -57,11 +57,39 @@ CutLayer::CutLayer(const Rsyn::PhysicalLayer& rsynLayer,
     : name(rsynLayer.getName()), idx(rsynLayer.getRelativeIndex()), width(rsynLayer.getWidth()) {
     //  Rsyn::PhysicalLayer (LEF)
     const lefiLayer* layer = rsynLayer.getLayer();
-    if (!layer->hasSpacingNumber() || !layer->numSpacing()) {
-        log() << "Error in " << __func__ << ": For " << rsynLayer.getName()
-              << " CutLayer::init, rsynSpacingRule is empty, init all rules with default 0... " << std::endl;
-    } else {
-        spacing = static_cast<DBU>(std::round(layer->spacing(0) * libDBU));
+    if (layer->hasSpacingNumber() && layer->numSpacing()) {
+        spacing = std::lround(layer->spacing(0) * libDBU);
+    }
+
+    if (layer->numProps()) {
+        for (unsigned iProp = 0; static_cast<int>(iProp) < layer->numProps(); ++iProp) {
+            if (!strcmp(layer->propName(iProp), "LEF58_SPACINGTABLE")) {
+                std::istringstream iss(layer->propValue(iProp));
+                std::string sBuf("");
+                double space{0};
+                while (iss) {
+                    iss >> sBuf;
+                    if (sBuf == ";") {
+                        continue;
+                    }
+
+                    if (sBuf == "DEFAULT") {
+                        iss >> space;
+                        if (!spacing) {
+                            spacing = std::lround(space * libDBU);
+                        } else if (std::lround(space * libDBU) != spacing) {
+                            log() << "Warning in " << __func__ << ": For " << name << ", mismatched defaultSpace & spacingTable... " << std::endl;
+                        }
+                    }
+                }
+            } else {
+                log() << "Warning in " << __func__ << ": For " << name << ", unknown prop: " << layer->propName(iProp) << "...\n";
+            }
+        }
+    }
+
+    if (!spacing) {
+        log() << "Error in " << __func__ << ": For " << name << " CutLayer::init, rsynSpacingRule is empty, init all rules with default 0... " << std::endl;
     }
     delete rsynLayer.getLayer();
 
@@ -75,7 +103,9 @@ CutLayer::CutLayer(const Rsyn::PhysicalLayer& rsynLayer,
         std::numeric_limits<DBU>::has_infinity ? std::numeric_limits<DBU>::infinity() : std::numeric_limits<DBU>::max();
     std::tuple<DBU, DBU, DBU, DBU> bestScore(dbuMax, dbuMax, dbuMax, dbuMax);
     for (const Rsyn::PhysicalVia& rsynVia : rsynVias) {
-        if (rsynVia.isViaDesign()) continue;
+        if (rsynVia.isViaDesign()) {
+            continue;
+        }
 
         if ((rsynVia.allBottomGeometries().size() != 1 ||
              rsynVia.allCutGeometries().size() != 1 ||
