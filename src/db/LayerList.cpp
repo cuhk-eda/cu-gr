@@ -16,6 +16,7 @@ void LayerList::init() {
     for (const Rsyn::PhysicalLayer& rsynLayer : physicalDesign.allPhysicalLayers()) {
         switch (rsynLayer.getType()) {
             case Rsyn::ROUTING:
+                assert(rsynLayer.getRelativeIndex() == rsynLayers.size());
                 rsynLayers.push_back(rsynLayer);
                 break;
             case Rsyn::CUT:
@@ -27,7 +28,7 @@ void LayerList::init() {
     }
     if (rsynCutLayers.size() + 1 != rsynLayers.size()) {
         log() << "Error in " << __func__ << ": rsynCutLayers.size() is " << rsynCutLayers.size()
-              << " , rsynLayers.size() is " << rsynLayers.size() << " , not matched... " << std::endl;
+              << " , rsynLayers.size() is " << rsynLayers.size() << " , not matched...\n";
     }
 
     //  Rsyn::PhysicalVia (LEF)
@@ -37,21 +38,10 @@ void LayerList::init() {
     }
 
     //  Rsyn::PhysicalTracks (DEF)
-    vector<Rsyn::PhysicalTracks> rsynTracks(rsynLayers.size());
-    for (const Rsyn::PhysicalTracks& rsynTrack : physicalDesign.allPhysicalTracks()) {
-        for (const Rsyn::PhysicalLayer& rsynLayer : rsynTrack.allLayers()) {
-            const int idx = rsynLayer.getRelativeIndex();
-            if ((rsynTrack.getDirection() == Rsyn::TRACK_HORIZONTAL) == !strcmp(rsynLayers[idx].getLayer()->direction(), "HORIZONTAL")) {
-                assert(rsynLayers[idx].getRelativeIndex() == idx);
-                rsynTracks[idx] = (rsynTrack);
-            }
-        }
-    }
-
-    // init each MetalLayer
+    //  init each MetalLayer
     layers.clear();
     for (unsigned i = 0; i != rsynLayers.size(); ++i) {
-        layers.emplace_back(rsynLayers[i], rsynTracks[i], libDBU);
+        layers.emplace_back(rsynLayers[i], physicalDesign.allPhysicalTracks(rsynLayers[i]), libDBU);
     }
 
     //  init MetalLayer::CrossPointSet

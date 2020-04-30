@@ -53,7 +53,7 @@ enum class AggrParaRunSpace { DEFAULT, LARGER_WIDTH, LARGER_LENGTH };
 // note: for operations on GeoPrimitives, all checking is down in LayerList for low level efficiency
 class MetalLayer {
 public:
-    MetalLayer(Rsyn::PhysicalLayer rsynLayer, Rsyn::PhysicalTracks rsynTrack, const DBU libDBU);
+    MetalLayer(Rsyn::PhysicalLayer rsynLayer, const vector<Rsyn::PhysicalTracks>& rsynTracks, const DBU libDBU);
 
     // Basic infomation
     std::string name;

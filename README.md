@@ -19,6 +19,8 @@ ACM/IEEE Design Automation Conference (DAC), San Francisco, CA, USA, July 19-23,
 (CUGR supports ICCAD'19 benchmarks ([v2](http://iccad-contest.org/2019/Problem_C/iccad19_benchmarks_v2.tar.gz), [hidden](http://iccad-contest.org/2019/Problem_C/iccad19_hidden_benchmarks.tar.gz)).
 This version of code is consistent with the one submitted to contest. For the DAC paper version, please refer to branch [dac2020](https://github.com/cuhk-eda/cu-gr/tree/dac2020))
 
+![CUGR](cugr.png "CUGR")
+
 ## 1. How to Build
 
 **Step 1:** Download the source code. For example,
