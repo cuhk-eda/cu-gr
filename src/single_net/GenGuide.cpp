@@ -33,7 +33,7 @@ void GuideGenerator::genConnGuides() {
 void GuideGenerator::patchPinRegions() {
     double patchThresh = 2.0;
     // check if the region allows patching
-    auto needPatch = [&](gr::GrPoint point) { return grDatabase.getCellUsage(point) < patchThresh; };
+    auto needPatch = [&](gr::GrPoint point) { return grDatabase.getCellResource(point) < patchThresh; };
     // get surrounding gcells of a point (normally 3 x 3, but will be different at boudary)
     auto getSurrounding = [&](gr::GrPoint point) {
         gr::GrBoxOnLayer box;
@@ -99,12 +99,12 @@ void GuideGenerator::patchLongSegments() {
         for (int cp = guide[1 - dir].low + offset; cp <= guide[1 - dir].high;) {
             int x = dir == X ? guide[dir].low : cp;
             int y = dir == X ? cp : guide[dir].low;
-            if (grDatabase.getCellUsage({layerIdx, x, y}) < patchThresh) {
+            if (grDatabase.getCellResource({layerIdx, x, y}) < patchThresh) {
                 bool patched = false;
                 for (int layer_delta = -1; layer_delta <= 1; layer_delta += 2) {
                     int layer = layerIdx + layer_delta;
                     if (layer < 1 || layer >= database.getLayerNum()) continue;
-                    if (grDatabase.getCellUsage({layer, x, y}) > patchThresh) {
+                    if (grDatabase.getCellResource({layer, x, y}) > patchThresh) {
                         grNet.patchRouteGuides.emplace_back(gr::GrBoxOnLayer(layer, {x}, {y}));
                         guideGenStat.longSegmentPatchNum++;
                         patched = true;
@@ -135,9 +135,9 @@ void GuideGenerator::patchVioCells() {
             int x = dir == X ? gridline : cp;
             int y = dir == X ? cp : gridline;
 
-            double cellUsage = grDatabase.getCellUsage({layerIdx, x, y});
+            double cellRsrc = grDatabase.getCellResource({layerIdx, x, y});
 
-            if (cellUsage <= 0) {
+            if (cellRsrc <= 0) {
                 guideGenStat.vioCellNum++;
 
                 gr::GrBoxOnLayer patch(layerIdx, utils::IntervalT<int>(x), utils::IntervalT<int>(y));
@@ -145,14 +145,14 @@ void GuideGenerator::patchVioCells() {
                 for (int g = gridline - queryWidth; g <= gridline + queryWidth; g++) {
                     if (g < 0 || g >= grDatabase.getNumGrPoint(dir)) continue;
 
-                    double curCellUsage = dir == X ? grDatabase.getCellUsage({layerIdx, g, y})
-                                                   : grDatabase.getCellUsage({layerIdx, x, g});
-                    if (curCellUsage <= 0) continue;
-                    cellUsage += curCellUsage;
+                    double curcellRsrc = dir == X ? grDatabase.getCellResource({layerIdx, g, y})
+                                                   : grDatabase.getCellResource({layerIdx, x, g});
+                    if (curcellRsrc <= 0) continue;
+                    cellRsrc += curcellRsrc;
                     patch[dir].Update(g);
                 }
 
-                if (cellUsage > 0) {
+                if (cellRsrc > 0) {
                     const vector<int> layers = {layerIdx + 1, layerIdx - 1};
                     for (auto l : layers) {
                         if (l >= database.getLayerNum() || l <= 1) continue;
@@ -160,7 +160,7 @@ void GuideGenerator::patchVioCells() {
                         bool vioFree = true;
                         for (int x = patch.lx(); x <= patch.hx() && vioFree; x++)
                             for (int y = patch.ly(); y <= patch.hy() && vioFree; y++)
-                                if (grDatabase.getCellUsage({l, x, y}) <= 0) vioFree = false;
+                                if (grDatabase.getCellResource({l, x, y}) <= 0) vioFree = false;
 
                         if (vioFree) {
                             grNet.patchRouteGuides.push_back(patch);

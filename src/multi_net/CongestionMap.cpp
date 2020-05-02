@@ -98,7 +98,7 @@ void CongestionMap::init(int x_crsn_scale, int y_crsn_scale) {
     for (int l_idx = 0; l_idx < database.getLayerNum(); l_idx++)
         for (int x_idx = 0; x_idx < grDatabase.getNumGrPoint(X); x_idx++)
             for (int y_idx = 0; y_idx < grDatabase.getNumGrPoint(Y); y_idx++)
-                rsrcMap[l_idx][x_idx][y_idx] = grDatabase.getCellUsage({l_idx, x_idx, y_idx});
+                rsrcMap[l_idx][x_idx][y_idx] = grDatabase.getCellResource({l_idx, x_idx, y_idx});
 
     xNumCrsnCell = ceil(grDatabase.getNumGrPoint(X) / (double)xCrsnScale);
     yNumCrsnCell = ceil(grDatabase.getNumGrPoint(Y) / (double)xCrsnScale);
@@ -139,7 +139,7 @@ void CongestionMap::update(const gr::GrNet& net) {
         int l_idx = box.layerIdx;
         for (int x_idx = box[X].low; x_idx <= box[X].high; x_idx++) {
             for (int y_idx = box[Y].low; y_idx <= box[Y].high; y_idx++) {
-                rsrcMap[l_idx][x_idx][y_idx] = grDatabase.getCellUsage({l_idx, x_idx, y_idx});
+                rsrcMap[l_idx][x_idx][y_idx] = grDatabase.getCellResource({l_idx, x_idx, y_idx});
                 pointSet.insert(grPointToPoint({l_idx, x_idx, y_idx}));
             }
         }
