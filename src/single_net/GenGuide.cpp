@@ -160,7 +160,9 @@ void GuideGenerator::patchVioCells() {
                         bool vioFree = true;
                         for (int x = patch.lx(); x <= patch.hx() && vioFree; x++)
                             for (int y = patch.ly(); y <= patch.hy() && vioFree; y++)
-                                if (grDatabase.getCellResource({l, x, y}) <= 0) vioFree = false;
+                                if (grDatabase.getCellResource({l, x, y}) <= 0) {
+                                    vioFree = false;
+                                }
 
                         if (vioFree) {
                             grNet.patchRouteGuides.push_back(patch);
