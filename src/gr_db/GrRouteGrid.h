@@ -23,7 +23,7 @@ public:
     db::CostT getWireCost(const GrEdge& edge) const;
     db::CostT getHistCost(int layerIdx, int gridline, int cp) const;
 
-    double getCellUsage(const GrPoint& point) const;  // Note: simplified version
+    double getCellResource(const GrPoint& point) const;  // Note: simplified version
 
     bool hasVio(const GrNet& net, bool hasCommit = true) const;
     bool hasVio(const GrEdge& edge, bool hasCommit = true) const;
@@ -87,7 +87,7 @@ private:
 
     double getViaUsage(int layerIdx, int x, int y) const;
     double getViaUsage(const GrPoint& via) const;
-    double getCellUsage(int layerIdx, int x, int y) const;
+    double getCellResource(int layerIdx, int x, int y) const;
 
     double getWireCapacity(const GrEdge& edge) const;
     double getInCellArea(const GrPoint& point) const;

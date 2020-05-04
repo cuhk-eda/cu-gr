@@ -143,7 +143,7 @@ double GrRouteGrid::getWireUsage(const GrEdge& edge) const {
 
 double GrRouteGrid::getViaUsage(const GrPoint& via) const { return getViaUsage(via.layerIdx, via[X], via[Y]); }
 
-double GrRouteGrid::getCellUsage(const GrPoint& point) const { return getCellUsage(point.layerIdx, point.x, point.y); }
+double GrRouteGrid::getCellResource(const GrPoint& point) const { return getCellResource(point.layerIdx, point.x, point.y); }
 
 double GrRouteGrid::getInCellUsedArea(const GrPoint& point) const {
     // note: the area defined here = # of used tracks * avg_used_length (total used length of tracks in the gcell)
@@ -205,7 +205,7 @@ double GrRouteGrid::getWireUsage(int layerIdx, int gridline, int cp) const {
 
 double GrRouteGrid::getViaUsage(int layerIdx, int x, int y) const { return routedViaMap[layerIdx][x][y]; }
 
-double GrRouteGrid::GrRouteGrid::getCellUsage(int layerIdx, int x, int y) const {
+double GrRouteGrid::getCellResource(int layerIdx, int x, int y) const {
     auto layerDir = database.getLayerDir(layerIdx);
     double totalRsrc = grDatabase.getNumTracks(layerIdx, layerDir == X ? x : y);
     double cellUsage = 0;
