@@ -13,7 +13,7 @@ In particular, our global router adopts several efficient and effective methods 
 More details are in the following paper:
 
 * Jinwei Liu, Chak-Wa Pui, Fangzhou Wang, Evangeline F. Y. Young,
-["CUGR: Detailed-Routability-Driven 3D Global Routing with Probabilistic Resource Model"](https://cwpui.com/doc/dac_gr.pdf),
+["CUGR: Detailed-Routability-Driven 3D Global Routing with Probabilistic Resource Model"](https://ieeexplore.ieee.org/document/9218646),
 ACM/IEEE Design Automation Conference (DAC), San Francisco, CA, USA, July 19-23, 2020.
 
 (CUGR supports ICCAD'19 benchmarks ([v2](http://iccad-contest.org/2019/Problem_C/iccad19_benchmarks_v2.tar.gz), [hidden](http://iccad-contest.org/2019/Problem_C/iccad19_hidden_benchmarks.tar.gz)).
