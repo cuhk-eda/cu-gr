@@ -471,20 +471,23 @@ void GrRouteGrid::markFixedMetals() {
                 aggr = db::AggrParaRunSpace::LARGER_LENGTH;
             }
             auto forbidRegion = database.getMetalRectForbidRegion(box, aggr);
-            auto gridBox = database.rangeSearch(forbidRegion,
-                                                aggr == db::AggrParaRunSpace::LARGER_WIDTH);  // TODO: change to false
+            auto gridBox = database.rangeSearch(forbidRegion, aggr == db::AggrParaRunSpace::LARGER_WIDTH);  // TODO: change to false
             if (!database.isValid(gridBox)) continue;
             box = database.getLoc(gridBox);
 
             auto grBox = rangeSearchGCell(box);
             auto trackIntvl = database.rangeSearchTrack(l, box[dir]);
-            if (!trackIntvl.IsValid()) continue;
+            if (!trackIntvl.IsValid()) {
+                continue;
+            }
 
             // mark wire usage
-            int jMin = max(grBox[1 - dir].low - 1, 0);
-            int jMax = min(grBox[1 - dir].high, getNumGrPoint(1 - dir) - 2);
-            for (int i = grBox[dir].low; i <= grBox[dir].high; i++) {
-                for (int j = jMin; j <= jMax; j++) {
+            const int iMin = max(grBox[dir].low, 0);
+            const int iMax = min(grBox[dir].high, getNumGrPoint(dir) - 1);
+            const int jMin = max(grBox[1 - dir].low - 1, 0);
+            const int jMax = min(grBox[1 - dir].high, getNumGrPoint(1 - dir) - 2);
+            for (int i = iMin; i <= iMax; ++i) {
+                for (int j = jMin; j <= jMax; ++j) {
                     utils::IntervalT<DBU> gcellIntvl1 = {getCoor(j, 1 - dir), getCoor(j + 1, 1 - dir)};
                     utils::IntervalT<DBU> gcellIntvl2 = {getCoor(j + 1, 1 - dir), getCoor(j + 2, 1 - dir)};
                     utils::IntervalT<DBU> edgeIntvl = {gcellIntvl1.center(), gcellIntvl2.center()};
