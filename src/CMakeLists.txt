@@ -35,7 +35,7 @@ set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Werror=return-type")
 # Check Dependencies #
 ######################
 # uncommment this line if you are using self-compiled boost lib
-# set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost COMPONENTS system filesystem program_options REQUIRED)
 # find_package(Threads)
 

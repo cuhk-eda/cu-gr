@@ -76,6 +76,7 @@ class Benchmarks:
 
 # all benchmarks
 all_benchmarks = Benchmarks()
+all_benchmarks.add('ispd18_sample', '8s{}', [''])
 all_benchmarks.add('ispd18_test{}', '8t{}', ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'])
 all_benchmarks.add('ispd19_test{}', '9t{}', ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'])
 all_benchmarks.add('ispd18_test{}_metal5', '8t{}m', ['5', '8', '10'])
