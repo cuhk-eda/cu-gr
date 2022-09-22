@@ -43,8 +43,6 @@ inline std::string getDimension(const Dimension dim ) {
 
 const Dimension REVERSE_DIMENSION[2] = {Y,X};
 
-#define for_each_dimension(variable) for ( int variable = 0; variable < 2; variable++ )
-
 // -----------------------------------------------------------------------------
 
 enum Boundary {
