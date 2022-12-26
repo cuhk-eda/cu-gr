@@ -60,7 +60,8 @@ void LayerList::init() {
     for (unsigned i = 0; i != rsynCutLayers.size(); ++i) {
         cutLayers.emplace_back(rsynCutLayers[i], rsynVias[i], layers[i].direction, layers[i + 1].direction, libDBU);
     }
-
+    
+    /* DR Lagacy Not Used
     // via area equivalent length (conservative)
     for (int i = 0, sz = rsynLayers.size(); i < sz; i++) {
         MetalLayer& layer = layers[i];
@@ -111,6 +112,7 @@ void LayerList::init() {
     //  init CutLayer::viaAccess
     initViaForbidRegions();
     initViaConfLUT();
+    */
 }
 
 bool LayerList::isValid(const GridPoint& gridPt) const {
