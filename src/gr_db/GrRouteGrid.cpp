@@ -254,6 +254,55 @@ void GrRouteGrid::printAllUsageAndVio() const {
     log() << "total score = " << totalScore << std::endl;
 }
 
+void GrRouteGrid::writeUsageHeatmap(const std::string filename) const {
+    // Generate a heatmap
+    const int l_size = database.getLayerNum() - 1;
+    const int x_size = getNumGrPoint(X);
+    const int y_size = getNumGrPoint(Y);
+    std::stringstream ss;
+    ss << "L " << l_size << " X " << x_size << " Y " << y_size << std::endl;
+    ss << "CAPACITY" << std::endl;
+    for (int layerIdx = 0; layerIdx < l_size; layerIdx++) {
+        for (int x = 0; x < x_size; x++) {
+            for (int y = 0; y < y_size; y++) {
+                auto layerDir = database.getLayerDir(layerIdx);
+                double totalRsrc = getNumTracks(layerIdx, layerDir == X ? x : y);
+                ss << totalRsrc << " ";
+            }
+        }
+    }
+    ss << std::endl;
+
+    ss << "DEMAND" << std::endl;
+    for (int layerIdx = 0; layerIdx < l_size; layerIdx++) {
+        for (int x = 0; x < x_size; x++) {
+            for (int y = 0; y < y_size; y++) {
+                auto layerDir = database.getLayerDir(layerIdx);
+                double cellUsage = 0;
+                int low_x = x - (layerDir == Y);
+                int low_y = y - (layerDir == X);
+                if (low_x >= 0 && low_y >= 0) {
+                    auto low_edge = gr::GrEdge({layerIdx, low_x, low_y}, {layerIdx, x, y});
+                    cellUsage += getFixedUsage(low_edge) + getWireUsage(low_edge);
+                }
+                int high_x = x + (layerDir == Y);
+                int high_y = y + (layerDir == X);
+                if (high_x < getNumGrPoint(X) && high_y < getNumGrPoint(Y)) {
+                    auto high_edge = gr::GrEdge({layerIdx, x, y}, {layerIdx, high_x, high_y});
+                    cellUsage += getFixedUsage(high_edge) + getWireUsage(high_edge);
+                }
+                cellUsage /= 2;
+                cellUsage += sqrt(getInCellViaNum({layerIdx, x, y})) * db::setting.unitSqrtViaUsage;
+                ss << cellUsage << " ";
+            }
+        }
+    }
+    ss << std::endl;
+    std::ofstream fout(filename);
+    fout << ss.str();
+    fout.close();
+}
+
 double GrRouteGrid::getAllWireUsage(const vector<double>& buckets,
                                     vector<int>& wireUsageGrid,
                                     vector<DBU>& wireUsageLength) const {

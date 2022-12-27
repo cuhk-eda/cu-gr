@@ -31,6 +31,7 @@ public:
 
     void print() const;
     void printAllUsageAndVio() const;
+    void writeUsageHeatmap(const std::string filename) const;
 
     double getWirelength() const;
 

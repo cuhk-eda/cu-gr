@@ -54,7 +54,7 @@ def route():
         run('gprof {} > {}.gprof'.format(binary, bm.full_name))
         run('./gprof2dot.py -s {0}.gprof | dot -Tpdf -o {0}.pdf'.format(bm.full_name))
 
-    run('mv *.solution.guide* *.log *.gprof *.pdf {} 2>/dev/null'.format(bm_log_dir))
+    run('mv *.solution.guide* *.log *.gprof *.pdf *.txt {} 2>/dev/null'.format(bm_log_dir))
 
 
 def evaluate():

@@ -107,6 +107,7 @@ void runISPD18Flow(const boost::program_options::variables_map& vm) {
     router.run();
 
     grDatabase.writeGuides(db::setting.outputFile);
+    grDatabase.writeUsageHeatmap("heatmap.txt");
 
     database.clear();
     grDatabase.clear();
