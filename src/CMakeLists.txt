@@ -3,7 +3,9 @@
 #########
 
 # Specify the minimum version for CMake
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.8)
+
+set(CMAKE_CXX_STANDARD 17)
 
 # Message
 message(STATUS "ICCAD19 GR CUHK")
@@ -14,13 +16,11 @@ message(STATUS ${PROJECT_SOURCE_DIR})
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Project's name
-project(iccad19gr)
+project(iccad19gr LANGUAGES C CXX)
 
 # Set the output folder where your program will be created
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-
-set(CMAKE_CXX_STANDARD 14)
 
 set(PATH_RSYN ${CMAKE_CURRENT_SOURCE_DIR}/../rsyn)
 set(PATH_ICCAD19 ${CMAKE_CURRENT_SOURCE_DIR})

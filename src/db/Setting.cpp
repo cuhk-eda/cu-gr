@@ -9,7 +9,7 @@ void Setting::makeItSilent() {
 }
 
 void Setting::adapt() {
-    if (database.nets.size() > 800000) {
+    if (database.nets.size() > 800000 && rrrIterLimit > 2) {
          --rrrIterLimit;
     
     }

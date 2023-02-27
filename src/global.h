@@ -24,7 +24,6 @@ using utils::printlog;
 
 // Boost libraries
 #include <boost/program_options.hpp>
-#include <boost/icl/split_interval_map.hpp>
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point.hpp>
 #include <boost/geometry/geometries/box.hpp>
