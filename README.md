@@ -38,7 +38,7 @@ More details are in [`scripts/build.py`](scripts/build.py).
 ### 1.1. Dependencies
 
 * [GCC](https://gcc.gnu.org/) (version >= 5.5.0) or other working c++ compliers
-* [CMake](https://cmake.org/) (version >= 2.8)
+* [CMake](https://cmake.org/) (version >= 3.8)
 * [Boost](https://www.boost.org/) (version >= 1.58)
 * [Python](https://www.python.org/) (version 3, optional, for utility scripts)
 * [Innovus®](https://www.cadence.com/content/cadence-www/global/en_US/home/tools/digital-design-and-signoff/soc-implementation-and-floorplanning/innovus-implementation-system.html) (version 18.1, optional, for design rule checking and evaluation)
